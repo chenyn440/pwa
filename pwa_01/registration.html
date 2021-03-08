@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiceWorkerRegistration</title>
+</head>
+<body>
+    <div>
+        <h1>ServiceWorkerRegistration</h1>
+        <img src="./wx-hover.png" alt="" srcset="">
+    </div>
+    <div>
+        <button type="button" id="reg">注册</button>
+        <button type="button" id="unReg">注销</button>
+        <button type="button" id="ready">查看ready调用</button>
+    </div>
+    <script>
+        // 注册
+        function registerStart() {
+            "serviceWorker" in navigator && navigator.serviceWorker.register('sw.js').then(() => {
+                console.log("sw.js 注册成功")
+            }).catch(e => {
+                console.log("sw.js 注册失败", e)
+            })
+        }
+        document.getElementById('reg').addEventListener('click', registerStart)
+        // 注销
+        function unRegisterEnd() {
+            navigator.serviceWorker.getRegistration().then(sReg => {
+                if(!sReg) {
+                    return Promise.resolve(true)
+                }
+                return sReg.unregister()
+            }).then(res => {
+                if(res) {
+                    console.log(res)
+                    console.log('卸载成功！')
+                }
+            })
+        }
+        document.getElementById('unReg').addEventListener('click', unRegisterEnd)
+        // 查看ready，代码延迟执行的属性
+        function backReady() {
+            "serviceWorker" in navigator && navigator.serviceWorker.ready.then(ServiceWorkerRegistration => {
+                console.log(ServiceWorkerRegistration)
+            })
+        }
+        document.getElementById('ready').addEventListener('click', backReady)
+    </script>
+</body>
+</html>

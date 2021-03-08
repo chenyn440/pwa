@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiceWorker</title>
+    <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+    <div>
+        <h1>ServiceWorker</h1>
+        <img src="./wx-hover.png" alt="" srcset="">
+    </div>
+    <div>
+        <button type="button" id="demo">ServiceWorker实例</button>
+    </div>
+    <script type="module">
+        // 注册
+        function testServiceWorker() {
+            "serviceWorker" in navigator
+            && navigator.serviceWorker.register('sw.js', {
+                scope: './',
+                updateViaCache: 'none'
+            }).then(swReg => {
+                // 需要installing状态改变
+                swReg.onupdatefound = () => {
+                    const workerInstalling = swReg.installing || swReg.waiting || swReg.active
+                    console.log(workerInstalling)
+                    if(!workerInstalling) {
+                        return
+                    }
+                    workerInstalling.onstatechange = () => {
+                        console.log("===> worker状态" + workerInstalling.state)
+                    }
+                }
+            }).catch(e => {
+                console.log("sw.js 注册失败", e)
+            })
+        }
+        testServiceWorker()
+        // document.getElementById('demo').addEventListener('click', testServiceWorker)
+    </script>
+</body>
+</html>
